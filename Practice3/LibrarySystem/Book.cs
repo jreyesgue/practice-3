@@ -1,4 +1,6 @@
-﻿namespace Practice3.LibrarySystem
+﻿using Practice3.Exceptions;
+
+namespace Practice3.LibrarySystem
 {
     public class Book
     {
@@ -18,11 +20,21 @@
 
         public void CheckOut()
         {
+            if (isCheckedOut)
+            {
+                throw new BookAlreadyCheckedOutException($"The Book {ISBN} is already checked out.");
+            }
+
             isCheckedOut = true;
         }
 
         public void Return()
         {
+            if (!isCheckedOut)
+            {
+                throw new BookNotCheckedOutException($"The Book {ISBN} is not checked out.");
+            }
+
             isCheckedOut = false;
         }
 
@@ -31,7 +43,7 @@
             Console.WriteLine($"\n--- Book {ISBN} ---");
             Console.WriteLine($"Title: {Title}");
             Console.WriteLine($"Author: {Author}");
-            Console.WriteLine($"Is {(isCheckedOut ? "" : "Not")} Checked Out");
+            Console.WriteLine($"Status: {(isCheckedOut ? "Checked Out" : "In Stock")}");
         }
     }
 }

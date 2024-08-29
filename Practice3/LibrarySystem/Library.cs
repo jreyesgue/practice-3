@@ -1,4 +1,6 @@
-﻿namespace Practice3.LibrarySystem
+﻿using Practice3.Exceptions;
+
+namespace Practice3.LibrarySystem
 {
     public class Library
     {
@@ -16,19 +18,44 @@
 
         public void RemoveBook(string bookIsbn)
         {
-            _books.RemoveAll(book => book.ISBN == bookIsbn);
+            try
+            {
+                Book book = FindBookByISBN(bookIsbn);
+                _books.Remove(book);
+                Console.WriteLine("All done!");
+            }
+            catch (BookNotFoundException ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
 
         public void CheckOutBook(string bookIsbn)
         {
-            Book book = FindBookByISBN(bookIsbn);
-            book.CheckOut();
+            try
+            {
+                Book book = FindBookByISBN(bookIsbn);
+                book.CheckOut();
+                Console.WriteLine("All done!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
 
         public void ReturnBook(string bookIsbn)
         {
-            Book book = FindBookByISBN(bookIsbn);
-            book.Return();
+            try
+            {
+                Book book = FindBookByISBN(bookIsbn);
+                book.Return();
+                Console.WriteLine("All done!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
 
         public void ListAllBooks()
@@ -38,7 +65,11 @@
 
         private Book FindBookByISBN(string bookIsbn)
         {
-            return _books.Find(book => book.ISBN == bookIsbn);
+            Book? result = _books.Find(book => book.ISBN == bookIsbn);
+
+            return result is not null
+                ? result
+                : throw new BookNotFoundException($"The Book {bookIsbn} could not be found.");
         }
     }
 }
